@@ -1,0 +1,13 @@
+﻿  Scanning sources for module dependencies...
+  Entity.cpp
+  SMath.cpp
+  main.cpp
+  ofApp.cpp
+LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/FORCE' specification
+main.obj : warning LNK4006: "class std::vector<class Entity *,class std::allocator<class Entity *> > mSceneEntities" (?mSceneEntities@@3V?$vector@PEAVEntity@@V?$allocator@PEAVEntity@@@std@@@std@@A) already defined in Entity.obj; second definition ignored
+ofApp.obj : warning LNK4006: "class std::vector<class Entity *,class std::allocator<class Entity *> > mSceneEntities" (?mSceneEntities@@3V?$vector@PEAVEntity@@V?$allocator@PEAVEntity@@@std@@@std@@A) already defined in Entity.obj; second definition ignored
+     Creating library bin\Asteriods_debug.lib and object bin\Asteriods_debug.exp
+bin\Asteriods_debug.exe : warning LNK4088: image being generated due to /FORCE option; image may not run
+  Asteriods.vcxproj -> C:\Users\sebas\Desktop\Projects\Asteriods\bin\Asteriods_debug.exe
+  File not found - *.dll
+  0 File(s) copied

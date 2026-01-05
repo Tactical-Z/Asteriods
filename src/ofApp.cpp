@@ -1,18 +1,32 @@
 #include "ofApp.h"
+#include "Entity.h" 
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+	ofNoFill();
+	mSceneEntities.push_back(new Ship());
 
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
+	float _dt = 1.f;
+	for (Entity* entity : mSceneEntities)
+		entity->Update(_dt);
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
 
+	for (Entity* entity : mSceneEntities)
+		entity->Draw();
+}
+
+//--------------------------------------------------------------
+void ofApp::exit()
+{
+	for (Entity* entity : mSceneEntities)
+		delete entity;
 }
 
 //--------------------------------------------------------------

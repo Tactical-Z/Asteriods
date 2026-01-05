@@ -1,0 +1,42 @@
+#include "Entity.h"
+#include "ofApp.h"
+#include "SMath.h"
+
+Entity::Entity()
+{
+}
+
+Entity::~Entity()
+{
+}
+
+Ship::Ship()
+{
+	mMesh = Mesh(glm::vec2(20,25), glm::vec2(28, 0), glm::vec2(36, 25));
+}
+
+Ship::~Ship()
+{
+}
+
+void Ship::Draw()
+{
+	std::vector<glm::vec2> tempPoints = SMath::ApplyTransform(&mTransform, &mMesh);
+	
+	// Calculate curve points
+	glm::vec2 edge = tempPoints[2] - tempPoints[0];
+	glm::vec2 normal(-edge.y, edge.x);
+	normal = glm::normalize(normal);
+	glm::vec2 curvePointOne = tempPoints[0] + normal * mCurveStrength;
+	glm::vec2 curvePointTwo = tempPoints[2] + normal * mCurveStrength;
+
+	ofDrawLine(tempPoints[0], tempPoints[1]);
+	ofDrawLine(tempPoints[1], tempPoints[2]);
+	ofDrawCurve(curvePointOne.x, curvePointOne.y, tempPoints[0].x, tempPoints[0].y, tempPoints[2].x, tempPoints[2].y, curvePointTwo.x, curvePointTwo.y);
+}
+
+void Ship::Update(float _dt)
+{
+	mTransform.mRotation = ofGetElapsedTimef();
+	mTransform.mPosition += glm::vec2(0.1, 0.1);
+}
