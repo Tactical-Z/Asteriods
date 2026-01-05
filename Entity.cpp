@@ -2,12 +2,20 @@
 #include "ofApp.h"
 #include "SMath.h"
 
-Entity::Entity()
-{
-}
 
 Entity::~Entity()
 {
+	for (std::pair<const std::string, Component*>& compPair : mComponents) {
+		delete compPair.second;
+		compPair.second = nullptr;
+	}
+}
+
+void Entity::UpdateEntityComponent(float _dt)
+{
+	for (std::pair<std::string, Component*> compPair : mComponents) {
+		compPair.second->UpdateComponent(_dt);
+	}
 }
 
 Ship::Ship()
@@ -37,6 +45,5 @@ void Ship::Draw()
 
 void Ship::Update(float _dt)
 {
-	mTransform.mRotation = ofGetElapsedTimef();
-	mTransform.mPosition += glm::vec2(0.1, 0.1);
+	
 }

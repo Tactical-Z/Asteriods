@@ -1,4 +1,5 @@
 ﻿  Scanning sources for module dependencies...
+  Component.cpp
   Entity.cpp
   SMath.cpp
   main.cpp

@@ -1,6 +1,8 @@
 #pragma once
-
+#include "Component.h"
 #include <glm/glm.hpp>
+#include <unordered_map>
+#include <string>
 
 struct Transform {
 	glm::vec2 mPosition = glm::vec2(0.f);
@@ -42,15 +44,24 @@ private:
 protected:
 	Transform mTransform;
 	Mesh mMesh;
-
+	std::unordered_map<std::string, Component*> mComponents;
 public:
 
-	
-	Entity();
+	Entity() = default;
 	~Entity();
 
 	virtual void Draw() = 0;
+	virtual void UpdateEntityComponent(float _dt);
 	virtual void Update(float _dt) = 0;
+	template <typename T>
+	void AddComponent(std::string _componentName) {
+		if (!mComponents.contains(_componentName)) {
+			mComponents.insert(std::pair<std::string, Component*>(_componentName, new T(this)));
+		}
+	}
+
+	PhysicsComponent* GetPhysicsComponent() { return static_cast<PhysicsComponent*>(mComponents["PhysicsComponent"]); }
+	Transform& GetTransformRef() { return mTransform; };
 };
 
 class Ship : public Entity {

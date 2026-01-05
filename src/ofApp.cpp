@@ -2,17 +2,23 @@
 #include "Entity.h" 
 
 //--------------------------------------------------------------
-void ofApp::setup(){
+void ofApp::setup() {
 	ofNoFill();
 	mSceneEntities.push_back(new Ship());
+	mSceneEntities[0]->AddComponent<PhysicsComponent>("PhysicsComponent");
+	mSceneEntities[0]->GetPhysicsComponent()->SetVelocity(glm::vec2(10,10));
+	mSceneEntities[0]->GetPhysicsComponent()->SetAngularVelocity(2.f);
 
+	
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	float _dt = 1.f;
-	for (Entity* entity : mSceneEntities)
-		entity->Update(_dt);
+	float dt = ofGetLastFrameTime();
+	for (Entity* entity : mSceneEntities) {
+		entity->UpdateEntityComponent(dt);
+		entity->Update(dt);
+	}
 }
 
 //--------------------------------------------------------------
