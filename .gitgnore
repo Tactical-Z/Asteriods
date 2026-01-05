@@ -156,7 +156,21 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
+*.vsid
+*.vcxproj.user
+*.suo
+*.user
 
+# Build output
+Debug/
+Release/
+x64/
+x86/
+
+# Intermediate files
+*.obj
+*.pdb
+*.ilk
 # Chutzpah Test files
 _Chutzpah*
 
