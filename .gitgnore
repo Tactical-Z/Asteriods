@@ -160,6 +160,14 @@ StyleCopReport.xml
 *.vcxproj.user
 *.suo
 *.user
+*.vsidx
+*.suo
+*.db
+*.ipch
+*.jason
+*.tlog
+*.log
+*.obj
 
 # Build output
 Debug/
