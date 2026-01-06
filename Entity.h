@@ -68,12 +68,20 @@ public:
 
 	PhysicsComponent* GetPhysicsComponent() { return static_cast<PhysicsComponent*>(mComponents["PhysicsComponent"]); }
 	Transform& GetTransformRef() { return mTransform; };
+	glm::vec2 GetPosition() { return mTransform.mPosition; }
+	void SetPosition(glm::vec2 _newPos) { mTransform.mPosition = _newPos; }
+	glm::vec2 GetScale() { return mTransform.mScale; }
+	void SetScale(glm::vec2 _newScale) { mTransform.mScale = _newScale; }
+	float GetRotation() { return mTransform.mRotation; }
+	void SetRotation(float _newRotation) { mTransform.mRotation = _newRotation; }
 };
 
 class Ship : public Entity {
 private: 
 
+	float mTrailRadius = 4.f;
 	float mCurveStrength = 20.f;
+	bool mAccelerating = false;
 
 public:
 	
@@ -83,4 +91,5 @@ public:
 	void Draw() override;
 	void Update(float _dt) override;
 
+	void SetIsAccelerating(bool _t) { mAccelerating = _t; };
 };

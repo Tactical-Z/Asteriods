@@ -41,9 +41,21 @@ void Ship::Draw()
 	ofDrawLine(tempPoints[0], tempPoints[1]);
 	ofDrawLine(tempPoints[1], tempPoints[2]);
 	ofDrawCurve(curvePointOne.x, curvePointOne.y, tempPoints[0].x, tempPoints[0].y, tempPoints[2].x, tempPoints[2].y, curvePointTwo.x, curvePointTwo.y);
+
+	if (mAccelerating) {
+		ofFill();
+		float radius = mTrailRadius * mTransform.mScale.y;
+		glm::vec2 backPosition = ((tempPoints[0] + tempPoints[2]) / 2) - ((mTransform.GetForwardVector() * (5 * mTransform.mScale)));
+		ofDrawCircle(backPosition, radius);
+
+		ofNoFill();
+	}
+		
+	
 }
 
 void Ship::Update(float _dt)
 {
+	
 	
 }

@@ -16,6 +16,10 @@ void ofApp::setup() {
 //--------------------------------------------------------------
 void ofApp::update(){
 	float dt = ofGetLastFrameTime();
+
+	UpdateCommands();
+	MaintainBounds();
+
 	for (Entity* entity : mSceneEntities) {
 		entity->UpdateEntityComponent(dt);
 		entity->Update(dt);
@@ -32,37 +36,39 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::exit()
 {
+	shuttingDown = true;
+
 	for (Entity* entity : mSceneEntities)
 		delete entity;
+
+	mSceneEntities.clear();
+	mCommandMap.clear();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 
-	Ship* playerShip = GetPlayerShip();
-	if (playerShip) {
-		switch (key)
-		{
-		case 'w':
-			playerShip->GetPhysicsComponent()->AddAcceleration(playerShip->GetTransformRef().GetForwardVector() * sPlayerShipAcceleration);
-			break;
-		case 'a':
-			playerShip->GetPhysicsComponent()->AddAngularVelocity(sPlayerShipAngularAcceleration);
-			break;
-		case 'd':
-			playerShip->GetPhysicsComponent()->AddAngularVelocity(-sPlayerShipAngularAcceleration);
-			break;
-		defaut:
-			break;
-		}
-	}
-	
+	if (shuttingDown) return;
 
+	if (key == 'w')
+		mCommandMap['w'] = true;
+	if (key == 'a')
+		mCommandMap['a'] = true;
+	if (key == 'd')
+		mCommandMap['d'] = true;
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
 
+	if (shuttingDown) return;
+
+	if (key == 'w')
+		mCommandMap['w'] = false;
+	if (key == 'a')
+		mCommandMap['a'] = false;
+	if (key == 'd')
+		mCommandMap['d'] = false;
 }
 
 //--------------------------------------------------------------
@@ -110,7 +116,7 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 }
 
-Ship* GetPlayerShip()
+Ship* ofApp::GetPlayerShip()
 {
 	for (Entity* entity : mSceneEntities) {
 		Ship* playerShip = dynamic_cast<Ship*>(entity);
@@ -119,4 +125,43 @@ Ship* GetPlayerShip()
 		}
 	}
 	return nullptr;
+}
+
+void ofApp::UpdateCommands()
+{
+	Ship* playerShip = GetPlayerShip();
+	if (playerShip) {
+		if (mCommandMap['w']) {
+			playerShip->GetPhysicsComponent()->AddAcceleration(playerShip->GetTransformRef().GetForwardVector() * sPlayerShipAcceleration);
+			playerShip->SetIsAccelerating(true);
+		}
+		else {
+			playerShip->SetIsAccelerating(false);
+		}
+		if (mCommandMap['a']) {
+			playerShip->GetPhysicsComponent()->AddAngularVelocity(sPlayerShipAngularAcceleration);
+		}
+		if (mCommandMap['d']) {
+			playerShip->GetPhysicsComponent()->AddAngularVelocity(-sPlayerShipAngularAcceleration);
+		}
+	}
+}
+
+void ofApp::MaintainBounds()
+{
+	Ship* playerShip = GetPlayerShip();
+	if (playerShip) {
+		if (playerShip->GetPosition().x > ofGetWindowWidth() + 10) {
+			playerShip->SetPosition(glm::vec2(-10, playerShip->GetPosition().y));
+		}
+		else if (playerShip->GetPosition().x < -10) {
+			playerShip->SetPosition(glm::vec2(ofGetWindowWidth() + 10, playerShip->GetPosition().y));
+		}
+		else if (playerShip->GetPosition().y > ofGetWindowHeight() + 10) {
+			playerShip->SetPosition(glm::vec2(playerShip->GetPosition().x, -10));
+		}
+		else if (playerShip->GetPosition().y < -10) {
+			playerShip->SetPosition(glm::vec2(playerShip->GetPosition().x, ofGetWindowHeight() + 10));
+		}
+	}
 }

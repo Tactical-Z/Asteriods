@@ -23,9 +23,13 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+private:
+	std::vector<class Entity*> mSceneEntities;
+	std::unordered_map<int, bool> mCommandMap;
+	bool shuttingDown = false;
+
+	Ship* GetPlayerShip();
+	void UpdateCommands();
+	void MaintainBounds();
 };
-
-std::vector<class Entity*> mSceneEntities;
-
-Ship* GetPlayerShip();
 

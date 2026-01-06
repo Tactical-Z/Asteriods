@@ -7,9 +7,15 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="SMath.cpp" />
-    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Component.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="SMath.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -20,10 +26,16 @@
     <ClInclude Include="src\ofApp.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="Entity.h" />
-    <ClInclude Include="SMath.h" />
-    <ClInclude Include="Component.h" />
+    <ClInclude Include="Component.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>src</Filter>
+    </ClInclude>
     <ClInclude Include="GameConstants.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="SMath.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

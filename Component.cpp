@@ -45,7 +45,10 @@ void PhysicsComponent::ApplyVelocity(Transform& _transform, float _dt)
 void PhysicsComponent::ForceCorrection()
 {
 	mVelocity.x = (mVelocity.x > sPlayerShipMaxVelocity) ? sPlayerShipMaxVelocity : mVelocity.x;
+	mVelocity.x = (mVelocity.x < -sPlayerShipMaxVelocity) ? -sPlayerShipMaxVelocity : mVelocity.x;
 	mVelocity.y = (mVelocity.y > sPlayerShipMaxVelocity) ? sPlayerShipMaxVelocity : mVelocity.y;
+	mVelocity.y = (mVelocity.y < -sPlayerShipMaxVelocity) ? -sPlayerShipMaxVelocity : mVelocity.y;
 	mAngularVelocity = (mAngularVelocity > sPlayerShipMaxAngularVelocity) ? sPlayerShipMaxAngularVelocity : mAngularVelocity;
+	mAngularVelocity = (mAngularVelocity < -sPlayerShipMaxAngularVelocity) ? -sPlayerShipMaxAngularVelocity : mAngularVelocity;
 	mAcceleration = glm::vec2(0);
 }
