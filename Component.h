@@ -20,7 +20,7 @@ class PhysicsComponent : public Component
 private:
 
 	glm::vec2 mVelocity = glm::vec2(0.f);
-	float mConstAngularVelocity = 0.f;
+	float mAngularVelocity = 0.f;
 	glm::vec2 mAcceleration = glm::vec2(0.f);
 
 protected:
@@ -33,11 +33,12 @@ public:
 
 	void ApplyAcceleration(float _dt);
 	void ApplyVelocity(struct Transform& _transform, float _dt);
+	void ForceCorrection();
 
 	void SetVelocity(glm::vec2 _newVelocity) { mVelocity = _newVelocity; };
-	void SetAngularVelocity(float _newVelocity) { mConstAngularVelocity = _newVelocity; };
+	void SetAngularVelocity(float _newVelocity) { mAngularVelocity = _newVelocity; };
 	void SetAcceleration(glm::vec2 _newAcceleration) { mAcceleration = _newAcceleration; };
 	void AddVelocity(glm::vec2 _addVelocity) { mVelocity += _addVelocity; };
-	void AddAngularVelocity(float _newVelocity) { mConstAngularVelocity += _newVelocity; };
+	void AddAngularVelocity(float _newVelocity) { mAngularVelocity += _newVelocity; };
 	void AddAcceleration(glm::vec2 _addAcceleration) { mAcceleration += _addAcceleration; };
 };

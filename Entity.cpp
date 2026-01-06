@@ -20,7 +20,7 @@ void Entity::UpdateEntityComponent(float _dt)
 
 Ship::Ship()
 {
-	mMesh = Mesh(glm::vec2(20,25), glm::vec2(28, 0), glm::vec2(36, 25));
+	mMesh = Mesh(glm::vec2(12,25), glm::vec2(36, 16), glm::vec2(12, 9));
 }
 
 Ship::~Ship()
@@ -33,7 +33,7 @@ void Ship::Draw()
 	
 	// Calculate curve points
 	glm::vec2 edge = tempPoints[2] - tempPoints[0];
-	glm::vec2 normal(-edge.y, edge.x);
+	glm::vec2 normal(edge.y, -edge.x);
 	normal = glm::normalize(normal);
 	glm::vec2 curvePointOne = tempPoints[0] + normal * mCurveStrength;
 	glm::vec2 curvePointTwo = tempPoints[2] + normal * mCurveStrength;

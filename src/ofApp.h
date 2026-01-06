@@ -26,3 +26,6 @@ class ofApp : public ofBaseApp{
 };
 
 std::vector<class Entity*> mSceneEntities;
+
+Ship* GetPlayerShip();
+

@@ -29,12 +29,14 @@ glm::vec2 SMath::ApplyRotation(float _rotationAngle, glm::vec2 _point, glm::vec2
 
 	glm::vec2 point = _point;
 
+	float rad = glm::radians(_rotationAngle);
+
 	// 1. move to origin
 	point -= _localOriginPos;
 
 	// rotation matrix
-	glm::mat2 rotationMatrix = glm::mat2({ {cos(_rotationAngle), -sin(_rotationAngle)},
-											{sin(_rotationAngle), cos(_rotationAngle)} });
+	glm::mat2 rotationMatrix = glm::mat2({ {cos(rad), -sin(rad)},
+											{sin(rad), cos(rad)} });
 
 	// 2. rotate points
 	point = rotationMatrix * point;

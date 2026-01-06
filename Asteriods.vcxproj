@@ -238,6 +238,7 @@
   <ItemGroup>
     <ClInclude Include="Component.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="GameConstants.h" />
     <ClInclude Include="SMath.h" />
     <ClInclude Include="src\ofApp.h" />
   </ItemGroup>

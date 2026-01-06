@@ -8,6 +8,12 @@ struct Transform {
 	glm::vec2 mPosition = glm::vec2(0.f);
 	float mRotation = 0.f;
 	glm::vec2 mScale = glm::vec2(1.f);
+
+	void SetRotation(float _rotation) { mRotation = _rotation; };
+	glm::vec2 GetForwardVector() {
+		float rad = glm::radians(mRotation);
+		return glm::vec2(cos(rad), -sin(rad));
+	};
 };
 
 struct Mesh {

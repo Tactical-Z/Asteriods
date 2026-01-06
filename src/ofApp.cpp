@@ -1,14 +1,15 @@
 #include "ofApp.h"
 #include "Entity.h" 
+#include "GameConstants.h"
 
 //--------------------------------------------------------------
 void ofApp::setup() {
 	ofNoFill();
 	mSceneEntities.push_back(new Ship());
 	mSceneEntities[0]->AddComponent<PhysicsComponent>("PhysicsComponent");
-	mSceneEntities[0]->GetPhysicsComponent()->SetVelocity(glm::vec2(10,10));
-	mSceneEntities[0]->GetPhysicsComponent()->SetAngularVelocity(2.f);
-
+	//mSceneEntities[0]->GetPhysicsComponent()->SetVelocity(glm::vec2(10,10));
+	mSceneEntities[0]->GetPhysicsComponent()->SetAngularVelocity(0.f);
+	mSceneEntities[0]->GetTransformRef().SetRotation(-45);
 	
 }
 
@@ -37,6 +38,25 @@ void ofApp::exit()
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+
+	Ship* playerShip = GetPlayerShip();
+	if (playerShip) {
+		switch (key)
+		{
+		case 'w':
+			playerShip->GetPhysicsComponent()->AddAcceleration(playerShip->GetTransformRef().GetForwardVector() * sPlayerShipAcceleration);
+			break;
+		case 'a':
+			playerShip->GetPhysicsComponent()->AddAngularVelocity(sPlayerShipAngularAcceleration);
+			break;
+		case 'd':
+			playerShip->GetPhysicsComponent()->AddAngularVelocity(-sPlayerShipAngularAcceleration);
+			break;
+		defaut:
+			break;
+		}
+	}
+	
 
 }
 
@@ -88,4 +108,15 @@ void ofApp::gotMessage(ofMessage msg){
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
 
+}
+
+Ship* GetPlayerShip()
+{
+	for (Entity* entity : mSceneEntities) {
+		Ship* playerShip = dynamic_cast<Ship*>(entity);
+		if (playerShip) {
+			return playerShip;
+		}
+	}
+	return nullptr;
 }

@@ -23,6 +23,9 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="SMath.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="GameConstants.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />

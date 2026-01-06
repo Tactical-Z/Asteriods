@@ -1,5 +1,6 @@
 #include "Component.h"
 #include "Entity.h"
+#include "GameConstants.h"
 
 Component::Component(Entity* _parent)
 	: mParent(_parent) 
@@ -27,7 +28,7 @@ void PhysicsComponent::UpdateComponent(float _dt)
 	ApplyAcceleration(_dt); // adds acceleration to velocity
 	ApplyVelocity(mParent->GetTransformRef(), _dt); // adds velocity to transform
 
-	mAcceleration = glm::vec2(0);
+	ForceCorrection();
 }
 
 void PhysicsComponent::ApplyAcceleration(float _dt)
@@ -38,5 +39,13 @@ void PhysicsComponent::ApplyAcceleration(float _dt)
 void PhysicsComponent::ApplyVelocity(Transform& _transform, float _dt)
 {
 	_transform.mPosition += mVelocity * _dt;
-	_transform.mRotation += mConstAngularVelocity * _dt;
+	_transform.mRotation += mAngularVelocity * _dt;
+}
+
+void PhysicsComponent::ForceCorrection()
+{
+	mVelocity.x = (mVelocity.x > sPlayerShipMaxVelocity) ? sPlayerShipMaxVelocity : mVelocity.x;
+	mVelocity.y = (mVelocity.y > sPlayerShipMaxVelocity) ? sPlayerShipMaxVelocity : mVelocity.y;
+	mAngularVelocity = (mAngularVelocity > sPlayerShipMaxAngularVelocity) ? sPlayerShipMaxAngularVelocity : mAngularVelocity;
+	mAcceleration = glm::vec2(0);
 }
