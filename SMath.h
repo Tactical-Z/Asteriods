@@ -9,6 +9,9 @@ public:
 	static std::vector<glm::vec2> ApplyTransform(struct Transform* _transform, struct Mesh* _mesh);
 
 	// Applies the rotation to the input point by angle, then returns the new point position. 
-	static glm::vec2 ApplyRotation(float _rotationAngle, glm::vec2 _point, glm::vec2 _localOriginPos);
+	static glm::vec2 ApplyRotation(float _rotationAngle, glm::vec2 _point);
+
+	static float GetDistanceBetweenTwoPoints(glm::vec2 _pointOne, glm::vec2 _pointTwo);
+
 };
 

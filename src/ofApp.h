@@ -31,5 +31,6 @@ private:
 	Ship* GetPlayerShip();
 	void UpdateCommands();
 	void MaintainBounds();
+	void CheckCollisions();
 };
 

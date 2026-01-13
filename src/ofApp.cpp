@@ -5,12 +5,22 @@
 //--------------------------------------------------------------
 void ofApp::setup() {
 	ofNoFill();
+	ofSetColor(255, 255, 255);
 	mSceneEntities.push_back(new Ship());
 	mSceneEntities[0]->AddComponent<PhysicsComponent>("PhysicsComponent");
 	//mSceneEntities[0]->GetPhysicsComponent()->SetVelocity(glm::vec2(10,10));
-	mSceneEntities[0]->GetPhysicsComponent()->SetAngularVelocity(0.f);
-	mSceneEntities[0]->GetTransformRef().SetRotation(-45);
+	mSceneEntities[0]->GetComponent<PhysicsComponent>()->SetAngularVelocity(0.f);
+	mSceneEntities[0]->AddComponent<CollisionComponent>("CollisionComponent");
+	mSceneEntities[0]->SetRotation(-45);
+	mSceneEntities[0]->SetPosition({100, 100});
 	
+	mSceneEntities.push_back(new Asteroid());
+	mSceneEntities[1]->AddComponent<PhysicsComponent>("PhysicsComponent");
+	mSceneEntities[1]->GetComponent<PhysicsComponent>()->SetVelocity(glm::vec2(10, 10));
+	mSceneEntities[1]->GetComponent<PhysicsComponent>()->SetAngularVelocity(5.f);
+	mSceneEntities[1]->AddComponent<CollisionComponent>("CollisionComponent");
+	mSceneEntities[1]->SetScale(glm::vec2(10));
+	mSceneEntities[1]->SetPosition(glm::vec2(250,250));
 }
 
 //--------------------------------------------------------------
@@ -19,6 +29,7 @@ void ofApp::update(){
 
 	UpdateCommands();
 	MaintainBounds();
+	CheckCollisions();
 
 	for (Entity* entity : mSceneEntities) {
 		entity->UpdateEntityComponent(dt);
@@ -84,6 +95,15 @@ void ofApp::mouseDragged(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
 
+	if (button == OF_MOUSE_BUTTON_LEFT) {
+		Bullet* bullet = new Bullet();
+		bullet->AddComponent<PhysicsComponent>("PhysicsComponent");
+		bullet->GetComponent<PhysicsComponent>()->SetVelocity(GetPlayerShip()->GetForwardVector() * sPlayerBulletSpeed);
+		bullet->AddComponent<CollisionComponent>("CollisionComponent");
+		bullet->GetComponent<CollisionComponent>()->AddIgnoreEntity(GetPlayerShip());
+		bullet->SetPosition(GetPlayerShip()->GetPosition());
+		mSceneEntities.push_back(bullet);
+	}
 }
 
 //--------------------------------------------------------------
@@ -132,36 +152,69 @@ void ofApp::UpdateCommands()
 	Ship* playerShip = GetPlayerShip();
 	if (playerShip) {
 		if (mCommandMap['w']) {
-			playerShip->GetPhysicsComponent()->AddAcceleration(playerShip->GetTransformRef().GetForwardVector() * sPlayerShipAcceleration);
+			playerShip->GetComponent<PhysicsComponent>()->AddAcceleration(playerShip->GetTransformRef()->GetForwardVector() * sPlayerShipAcceleration);
 			playerShip->SetIsAccelerating(true);
 		}
 		else {
 			playerShip->SetIsAccelerating(false);
 		}
 		if (mCommandMap['a']) {
-			playerShip->GetPhysicsComponent()->AddAngularVelocity(sPlayerShipAngularAcceleration);
+			playerShip->GetComponent<PhysicsComponent>()->AddAngularVelocity(sPlayerShipAngularAcceleration);
 		}
 		if (mCommandMap['d']) {
-			playerShip->GetPhysicsComponent()->AddAngularVelocity(-sPlayerShipAngularAcceleration);
+			playerShip->GetComponent<PhysicsComponent>()->AddAngularVelocity(-sPlayerShipAngularAcceleration);
 		}
 	}
 }
 
 void ofApp::MaintainBounds()
 {
-	Ship* playerShip = GetPlayerShip();
-	if (playerShip) {
-		if (playerShip->GetPosition().x > ofGetWindowWidth() + 10) {
-			playerShip->SetPosition(glm::vec2(-10, playerShip->GetPosition().y));
+	for(Entity* entity : mSceneEntities)
+	if (entity) {
+		if (entity->GetPosition().x > ofGetWindowWidth() + 10) {
+			entity->SetPosition(glm::vec2(-10, entity->GetPosition().y));
 		}
-		else if (playerShip->GetPosition().x < -10) {
-			playerShip->SetPosition(glm::vec2(ofGetWindowWidth() + 10, playerShip->GetPosition().y));
+		else if (entity->GetPosition().x < -10) {
+			entity->SetPosition(glm::vec2(ofGetWindowWidth() + 10, entity->GetPosition().y));
 		}
-		else if (playerShip->GetPosition().y > ofGetWindowHeight() + 10) {
-			playerShip->SetPosition(glm::vec2(playerShip->GetPosition().x, -10));
+		else if (entity->GetPosition().y > ofGetWindowHeight() + 10) {
+			entity->SetPosition(glm::vec2(entity->GetPosition().x, -10));
 		}
-		else if (playerShip->GetPosition().y < -10) {
-			playerShip->SetPosition(glm::vec2(playerShip->GetPosition().x, ofGetWindowHeight() + 10));
+		else if (entity->GetPosition().y < -10) {
+			entity->SetPosition(glm::vec2(entity->GetPosition().x, ofGetWindowHeight() + 10));
+		}
+	}
+}
+
+void ofApp::CheckCollisions()
+{
+	
+	for (int i = 0; i < mSceneEntities.size(); i++) {
+
+		CollisionComponent* collisionCompA = mSceneEntities[i]->GetComponent<CollisionComponent>();
+
+		for (int j = i + 1; j < mSceneEntities.size(); j++) {
+			CollisionComponent* collisionCompB = mSceneEntities[j]->GetComponent<CollisionComponent>();
+
+			// Check for early exit
+			if ((!collisionCompA || !collisionCompB) ||
+				(!collisionCompA->IsCollisionEnabled() || !collisionCompB->IsCollisionEnabled()) ||
+				(collisionCompA->ContainsIgnoreEntity(collisionCompB->GetParent()) || collisionCompB->ContainsIgnoreEntity(collisionCompA->GetParent()))) {
+				return;
+			}
+
+			if (CollisionComponent::IsIntersecting(collisionCompA, collisionCompB)) {
+
+				// Collision Result
+				// player collided into something
+				if (collisionCompA->GetParent() == GetPlayerShip()) {
+					std::cout << "player died" << std::endl;
+					continue;
+				}
+
+				// Bullet collided into something (only bullet and asteroid left)
+				std::cout << "destroy asteroid and bullet" << std::endl;
+			}
 		}
 	}
 }

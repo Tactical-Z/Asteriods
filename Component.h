@@ -13,6 +13,8 @@ public:
 
 	virtual void UpdateComponent(float _dt) = 0; 
 
+	Entity* GetParent() { return mParent; }
+
 };
 
 class PhysicsComponent : public Component
@@ -32,7 +34,7 @@ public:
 	void UpdateComponent(float _dt) override;
 
 	void ApplyAcceleration(float _dt);
-	void ApplyVelocity(struct Transform& _transform, float _dt);
+	void ApplyVelocity(struct Transform* _transform, float _dt);
 	void ForceCorrection();
 
 	void SetVelocity(glm::vec2 _newVelocity) { mVelocity = _newVelocity; };
@@ -41,4 +43,31 @@ public:
 	void AddVelocity(glm::vec2 _addVelocity) { mVelocity += _addVelocity; };
 	void AddAngularVelocity(float _newVelocity) { mAngularVelocity += _newVelocity; };
 	void AddAcceleration(glm::vec2 _addAcceleration) { mAcceleration += _addAcceleration; };
+};
+
+class CollisionComponent : public Component
+{
+private:
+
+	bool mCollisionEnabled = true;
+	std::vector<Entity*> mIgnoreEntities;
+
+protected:
+public:
+
+	CollisionComponent(Entity* _parent);
+	~CollisionComponent();
+
+	void UpdateComponent(float _dt) override;
+
+	static bool IsIntersecting(CollisionComponent* _colliderA, CollisionComponent* _colliderB);
+	static bool BoundingSphereVBoundingSphereIntersect(CollisionComponent* _colliderA, CollisionComponent* _colliderB);
+
+	//bool IsColliding(Entity* _otherObject);
+	//bool IsOverlappingBoundingSphere(Entity* _otherObject);
+	void AddIgnoreEntity(Entity* _ignoreEntity) { mIgnoreEntities.push_back(_ignoreEntity); };
+	std::vector<Entity*>* GetIgnoreEntitiesRef() { return &mIgnoreEntities; };
+	bool IsCollisionEnabled() { return mCollisionEnabled; };
+	void SetCollisionEnabled(bool _b) { mCollisionEnabled = _b; };
+	bool ContainsIgnoreEntity(Entity* _entityToIgnore) { return std::find(mIgnoreEntities.begin(), mIgnoreEntities.end(), _entityToIgnore) != mIgnoreEntities.end(); };
 };
