@@ -1,6 +1,5 @@
 #include "Entity.h"
 #include "ofApp.h"
-#include "GameConstants.h"
 #include "SMath.h"
 
 
@@ -12,16 +11,22 @@ Entity::~Entity()
 	}
 }
 
-void Entity::DrawDebug()
+void Entity::DrawDebug(GameState _currentState)
 {
 	if (DEBUG) {
-		ofSetColor(255, 0, 0);
+		if (_currentState == GameState::PLAYING)
+			ofSetColor(255, 0, 0);
+		else 
+			ofSetColor(255/2, 0, 0);
 		// Sphere bounding area
 		glm::vec2 position = mMesh.mLocalOrigin + mTransform.mPosition;
 		float maxScale = std::max(mTransform.mScale.x, mTransform.mScale.y);
 		float radius = mMesh.mObjectBoundRadius * maxScale;
 		ofDrawCircle(position, radius);
-		ofSetColor(255, 255, 255);
+		if(_currentState == GameState::PLAYING )
+			ofSetColor(255, 255, 255);
+		else
+			ofSetColor(255/2, 255 / 2, 255 / 2);
 	}
 }
 
@@ -41,7 +46,7 @@ Ship::~Ship()
 {
 }
 
-void Ship::Draw()
+void Ship::Draw(GameState _currentState)
 {
 	std::vector<glm::vec2> tempPoints = SMath::ApplyTransform(&mTransform, &mMesh);
 	
@@ -66,7 +71,7 @@ void Ship::Draw()
 		ofNoFill();
 	}
 		
-	DrawDebug();
+	DrawDebug(_currentState);
 }
 
 void Ship::Update(float _dt)
@@ -84,7 +89,7 @@ Asteroid::~Asteroid()
 {
 }
 
-void Asteroid::Draw()
+void Asteroid::Draw(GameState _currentState)
 {
 	std::vector<glm::vec2> tempPoints = SMath::ApplyTransform(&mTransform, &mMesh);
 
@@ -94,7 +99,7 @@ void Asteroid::Draw()
 	ofDrawLine(tempPoints[3], tempPoints[2]);
 	
 	
-	DrawDebug();
+	DrawDebug(_currentState);
 	
 	
 }
@@ -113,7 +118,7 @@ Bullet::~Bullet()
 {
 }
 
-void Bullet::Draw()
+void Bullet::Draw(GameState _currentState)
 {
 	std::vector<glm::vec2> tempPoints = SMath::ApplyTransform(&mTransform, &mMesh);
 	float maxScale = std::max(mTransform.mScale.x, mTransform.mScale.y);

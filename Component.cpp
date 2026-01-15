@@ -1,6 +1,7 @@
 #include "Component.h"
 #include "Entity.h"
 #include "GameConstants.h"
+#include "ofApp.h"
 
 Component::Component(Entity* _parent)
 	: mParent(_parent) 
@@ -84,10 +85,21 @@ bool CollisionComponent::IsIntersecting(CollisionComponent* _colliderA, Collisio
 
 bool CollisionComponent::BoundingSphereVBoundingSphereIntersect(CollisionComponent* _colliderA, CollisionComponent* _colliderB)
 {
-	//Transform* transformA = _colliderA->GetParent()->GetTransformRef();
-	//Transform* TransformB = _colliderA->GetParent()->GetTransformRef();
+	Transform* transformA = _colliderA->GetParent()->GetTransformRef();
+	Transform* transformB = _colliderB->GetParent()->GetTransformRef();
+	Mesh* meshA = _colliderA->GetParent()->GetMeshRef();
+	Mesh* meshB = _colliderB->GetParent()->GetMeshRef();
+	
+	glm::vec2 centreDist = (transformB->mPosition - transformA->mPosition);
+	float totalDistance = glm::dot(centreDist, centreDist);
 
-	//glm::vec2 centreDiff = 
+	// apply scale transform:
+	float maxScale = std::max(transformB->mScale.x, transformB->mScale.y);
+	float radiusSum = pow((meshA->mObjectBoundRadius + (meshB->mObjectBoundRadius * maxScale)), 2);
+
+	if (totalDistance <= radiusSum) {
+		return true;
+	}
 
 	return false;
 }

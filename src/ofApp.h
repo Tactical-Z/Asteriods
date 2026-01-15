@@ -1,8 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
+#include "GameConstants.h"
 #include "Entity.h"
-
 
 class ofApp : public ofBaseApp{
 
@@ -24,13 +24,16 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 private:
+	GameState mGameState;
+	bool mWaitOnPauseRelease = false;
 	std::vector<class Entity*> mSceneEntities;
 	std::unordered_map<int, bool> mCommandMap;
 	bool shuttingDown = false;
+	float mScore = 0.f;
 
 	Ship* GetPlayerShip();
 	void UpdateCommands();
 	void MaintainBounds();
 	void CheckCollisions();
+	void SetState(GameState _newState);
 };
-

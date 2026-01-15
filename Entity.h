@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "SMath.h"
+#include "GameConstants.h"
 #include <glm/glm.hpp>
 #include <unordered_map>
 #include <string>
@@ -100,8 +101,8 @@ public:
 	Entity() = default;
 	~Entity();
 
-	virtual void Draw() = 0;
-	void DrawDebug();
+	virtual void Draw(GameState _currentState) = 0;
+	void DrawDebug(GameState _currentState);
 	virtual void UpdateEntityComponent(float _dt);
 	virtual void Update(float _dt) = 0;
 	template <typename T>
@@ -122,6 +123,7 @@ public:
 	}
 
 	Transform* GetTransformRef() { return &mTransform; };
+	Mesh* GetMeshRef() { return &mMesh; };
 	glm::vec2 GetForwardVector() { return mTransform.GetForwardVector();}
 	glm::vec2 GetPosition() { return mTransform.mPosition; }
 	void SetPosition(glm::vec2 _newPos) { mTransform.mPosition = _newPos; }
@@ -143,7 +145,7 @@ public:
 	Ship();
 	~Ship();
 
-	void Draw() override;
+	void Draw(GameState _currentState) override;
 	void Update(float _dt) override;
 
 	void SetIsAccelerating(bool _t) { mAccelerating = _t; };
@@ -157,7 +159,7 @@ public:
 	Asteroid();
 	~Asteroid();
 
-	void Draw() override;
+	void Draw(GameState _currentState) override;
 	void Update(float _dt) override;
 };
 
@@ -171,6 +173,6 @@ public:
 	Bullet();
 	~Bullet();
 
-	void Draw() override;
+	void Draw(GameState _currentState) override;
 	void Update(float _dt) override;
 };
