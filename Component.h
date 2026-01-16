@@ -52,16 +52,23 @@ private:
 	bool mCollisionEnabled = true;
 	std::vector<Entity*> mIgnoreEntities;
 
+public:
+	float mObjectBoundRadius = 0.f;
+	glm::vec2 mObjectAABBBounds = glm::vec2(0);
+
 protected:
 public:
 
 	CollisionComponent(Entity* _parent);
 	~CollisionComponent();
 
+	void SetObjectBounds(Entity* _parent);
+
 	void UpdateComponent(float _dt) override;
 
 	static bool IsIntersecting(CollisionComponent* _colliderA, CollisionComponent* _colliderB);
 	static bool BoundingSphereVBoundingSphereIntersect(CollisionComponent* _colliderA, CollisionComponent* _colliderB);
+	static bool SATCollision(CollisionComponent* _colliderA, CollisionComponent* _colliderB);
 
 	//bool IsColliding(Entity* _otherObject);
 	//bool IsOverlappingBoundingSphere(Entity* _otherObject);

@@ -6,6 +6,7 @@
 Component::Component(Entity* _parent)
 	: mParent(_parent) 
 {
+
 }
 
 Component::~Component()
@@ -57,10 +58,36 @@ void PhysicsComponent::ForceCorrection()
 CollisionComponent::CollisionComponent(Entity* _parent)
 	: Component(_parent)
 {
+	SetObjectBounds(_parent);
 }
 
 CollisionComponent::~CollisionComponent()
 {
+}
+
+void CollisionComponent::SetObjectBounds(Entity* _parent)
+{
+	float x = 0.f;
+	float y = 0.f;
+
+	for (glm::vec2 point : _parent->GetMeshRef()->mPoints) {
+		if (x < abs(point.x)) {
+			x = abs(point.x);
+		}
+		if (y < abs(point.y)) {
+			y = abs(point.y);
+		}
+	}
+	mObjectAABBBounds = glm::vec2(x, y);
+
+	float r = 0.f;
+	for (glm::vec2 point : _parent->GetMeshRef()->mPoints) {
+		float dist = SMath::GetDistanceBetweenTwoPoints(_parent->GetMeshRef()->mLocalOrigin, point);
+		if (r < dist) {
+			r = dist;
+		}
+	}
+	mObjectBoundRadius = r;
 }
 
 void CollisionComponent::UpdateComponent(float _dt)
@@ -73,33 +100,53 @@ bool CollisionComponent::IsIntersecting(CollisionComponent* _colliderA, Collisio
 
 	// Bounding Sphere intesect
 	if (BoundingSphereVBoundingSphereIntersect(_colliderA, _colliderB)) {
-		return true;
-
-		// Complex intersect
+		
+		// Check complex intersect
+		if(SATCollision(_colliderA, _colliderB))
+			return true;
+		return false;
+	
 	}
-
-
 
 	return false;
 }
 
 bool CollisionComponent::BoundingSphereVBoundingSphereIntersect(CollisionComponent* _colliderA, CollisionComponent* _colliderB)
 {
-	Transform* transformA = _colliderA->GetParent()->GetTransformRef();
-	Transform* transformB = _colliderB->GetParent()->GetTransformRef();
-	Mesh* meshA = _colliderA->GetParent()->GetMeshRef();
-	Mesh* meshB = _colliderB->GetParent()->GetMeshRef();
-	
-	glm::vec2 centreDist = (transformB->mPosition - transformA->mPosition);
+
+	glm::vec2 ObjAPos = _colliderA->GetParent()->GetPosition();
+	glm::vec2 ObjBPos = _colliderB->GetParent()->GetPosition();
+	float ObjAMaxScale = _colliderA->GetParent()->GetMaxScale();
+	float ObjBMaxScale = _colliderB->GetParent()->GetMaxScale();
+
+	glm::vec2 centreDist = (ObjBPos - ObjAPos);
 	float totalDistance = glm::dot(centreDist, centreDist);
 
-	// apply scale transform:
-	float maxScale = std::max(transformB->mScale.x, transformB->mScale.y);
-	float radiusSum = pow((meshA->mObjectBoundRadius + (meshB->mObjectBoundRadius * maxScale)), 2);
+	// apply scale transform
+	float radiusSum = pow(((_colliderA->mObjectBoundRadius * ObjAMaxScale) + (_colliderB->mObjectBoundRadius * ObjBMaxScale)), 2);
 
 	if (totalDistance <= radiusSum) {
 		return true;
 	}
+
+	return false;
+}
+
+bool CollisionComponent::SATCollision(CollisionComponent* _colliderA, CollisionComponent* _colliderB)
+{
+	glm::vec2 ObjAPos = _colliderA->GetParent()->GetPosition();
+	glm::vec2 ObjBPos = _colliderB->GetParent()->GetPosition();
+	float ObjAMaxScale = _colliderA->GetParent()->GetMaxScale();
+	float ObjBMaxScale = _colliderB->GetParent()->GetMaxScale();
+
+	// 1. for each object Simplify to convex hulls
+	// 2. for each hull calculate side normals 
+	// 3. for each normal project onto each axis
+	// 4. for each axis check for overlap
+	// 5. (compute minimum translation vector)
+	// 6. (Handel edge cases)
+	// 7. (account for object rotation/movement)
+
 
 	return false;
 }

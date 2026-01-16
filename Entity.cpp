@@ -1,6 +1,8 @@
 #include "Entity.h"
+#include "Component.h"
 #include "ofApp.h"
 #include "SMath.h"
+
 
 
 Entity::~Entity()
@@ -18,15 +20,19 @@ void Entity::DrawDebug(GameState _currentState)
 			ofSetColor(255, 0, 0);
 		else 
 			ofSetColor(255/2, 0, 0);
-		// Sphere bounding area
-		glm::vec2 position = mMesh.mLocalOrigin + mTransform.mPosition;
-		float maxScale = std::max(mTransform.mScale.x, mTransform.mScale.y);
-		float radius = mMesh.mObjectBoundRadius * maxScale;
-		ofDrawCircle(position, radius);
-		if(_currentState == GameState::PLAYING )
-			ofSetColor(255, 255, 255);
-		else
-			ofSetColor(255/2, 255 / 2, 255 / 2);
+
+		CollisionComponent* collisionComp = GetComponent<CollisionComponent>();
+		if (collisionComp) {
+			// Sphere bounding area
+			glm::vec2 position = mMesh.mLocalOrigin + mTransform.mPosition;
+			float maxScale = std::max(mTransform.mScale.x, mTransform.mScale.y);
+			float radius = collisionComp->mObjectBoundRadius * maxScale;
+			ofDrawCircle(position, radius);
+			if (_currentState == GameState::PLAYING)
+				ofSetColor(255, 255, 255);
+			else
+				ofSetColor(255 / 2, 255 / 2, 255 / 2);
+		}
 	}
 }
 
